@@ -1,0 +1,82 @@
+<% if node['cms']['proxy_contest']['host'] %>
+  upstream cms_contest {
+    ip_hash;
+  <% for cs in node['cms']['contest_server'] %>
+    server <%= cs['host'] %>:<%= cs['port'] %>;
+  <% end %>
+  }
+
+  server {
+    listen <%= node['cms']['proxy_contest']['port'] %>;
+
+    server_name <%= node['cms']['proxy_contest']['host'] %>;
+
+    <% if node['cms']['proxy_contest']['username'] %>
+    auth_basic            "Restricted";
+    auth_basic_user_file  <%= node['nginx']['dir'] %>/htpasswd-cms-contest;
+  <% end %>
+
+    location / {
+      proxy_pass http://cms_contest;
+    }
+    proxy_set_header Host            $host;
+    proxy_set_header X-Real-IP       $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+<% end %>
+
+<% if node['cms']['proxy_ranking']['host'] %>
+  upstream cms_ranking {
+    ip_hash;
+  <% for rs in node['cms']['ranking_server'] %>
+    server <%= rs['host'] %>:<%= rs['port'] %>;
+  <% end %>
+  }
+
+  server {
+    listen <%= node['cms']['proxy_ranking']['port'] %>;
+
+    server_name <%= node['cms']['proxy_ranking']['host'] %>;
+
+    <% if node['cms']['proxy_ranking']['username'] %>
+    auth_basic            "Restricted";
+    auth_basic_user_file  <%= node['nginx']['dir'] %>/htpasswd-cms-ranking;
+    <% end %>
+
+    location / {
+      proxy_pass http://cms_ranking;
+      proxy_buffering off;
+    }
+    proxy_set_header Host            $host;
+    proxy_set_header X-Real-IP       $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+<% end %>
+
+<% if node['cms']['proxy_admin']['host'] %>
+  upstream cms_admin {
+    ip_hash;
+  <% for cs in node['cms']['admin_server'] %>
+    server <%= cs['host'] %>:<%= cs['port'] %>;
+  <% end %>
+  }
+
+  server {
+    listen <%= node['cms']['proxy_admin']['port'] %>;
+
+    server_name <%= node['cms']['proxy_admin']['host'] %>;
+
+    <% if node['cms']['proxy_admin']['username'] %>
+    auth_basic            "Restricted";
+    auth_basic_user_file  <%= node['nginx']['dir'] %>/htpasswd-cms-admin;
+    <% end %>
+
+    location / {
+      proxy_pass http://cms_admin;
+    }
+    proxy_set_header Host            $host;
+    proxy_set_header X-Real-IP       $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+<% end %>
+

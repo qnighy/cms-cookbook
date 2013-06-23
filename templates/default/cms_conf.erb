@@ -1,0 +1,89 @@
+<% require "json" %>
+<%= JSON.pretty_generate({
+  "temp_dir" => "/tmp",
+  "core_services" => Hash[
+    ['LogService', 'ResourceService', 'ScoringService',
+     'Checker', 'EvaluationService', 'Worker',
+     'ContestWebServer', 'AdminWebServer', 'TestFileCacher'].map{|s|
+       [s,node['cms']['services'][s]]
+    }
+  ],
+
+  "other_services" => {
+    'TestFileCacher' => node['cms']['services']['TestFileCacher']
+  },
+
+  "database" =>
+    "postgresql+psycopg2://cmsuser:" +
+    node['cms']['db']['password'] +
+    "@" +
+    node['cms']['db']['server'] +
+    "/" +
+    node['cms']['db']['database'],
+
+  "database_debug" => node['cms']['db']['debug'],
+  "twophase_commit" => node['cms']['twophase_commit'],
+  "keep_sandbox" => node['cms']['keep_sandbox'],
+  "secret_key" => node['cms']['secret_key'],
+  "tornado_debug" => node['cms']['tornado_debug'],
+  "contest_listen_address" =>
+    node['cms']['contest_server'].map{|cs|
+      cs['listen_address'] || ""
+    },
+  "contest_listen_port" =>
+    node['cms']['contest_server'].map{|cs|
+      cs['port']
+    },
+  "cookie_duration" => node['cms']['cookie_duration'],
+
+  "submit_local_copy" => node['cms']['submit_local_copy'],
+  "submit_local_copy_path" => node['cms']['submit_local_copy_path'],
+
+  "ip_lock" => node['cms']['ip_lock'],
+  "block_hidden_users" => node['cms']['block_hidden_users'],
+  "is_proxy_used" => node['cms']['is_proxy_used'],
+
+  "max_submission_length" => node['cms']['max_submission_length'],
+  "max_input_length" => node['cms']['max_input_length'],
+
+  "stl_path" => node['cms']['stl_path'],
+
+  "allow_communication" => node['cms']['allow_communication'],
+
+  "admin_listen_address" =>
+    node['cms']['admin_server'][0]['listen_address'] || "",
+  "admin_listen_port" =>
+    node['cms']['admin_server'][0]['port'],
+
+  "rankings_address" =>
+    node['cms']['ranking_server'].map{|rs|
+      [
+        rs['protocol'] || "http",
+        rs['host'],
+        rs['port']
+      ]
+    },
+  "rankings_username" =>
+    node['cms']['ranking_server'].map{|rs|
+      rs['username']
+    },
+  "rankings_password" =>
+    node['cms']['ranking_server'].map{|rs|
+      rs['password']
+    },
+
+  "process_cmdline" => node['cms']['process_cmdline'],
+
+  "color_shell_log" =>        node['cms']['color_shell_log'],
+  "color_file_log" =>         node['cms']['color_file_log'],
+  "color_remote_shell_log" => node['cms']['color_remote_shell_log'],
+  "color_remote_file_log" =>  node['cms']['color_remote_file_log'],
+
+  "auth_types" => node['cms']['auth']['auth_types'],
+
+  "twitter_consumer_key" => node['cms']['auth']['twitter_consumer_key'],
+  "twitter_consumer_secret" => node['cms']['auth']['twitter_consumer_secret'],
+
+  "facebook_app_id" => node['cms']['auth']['facebook_app_id'],
+  "facebook_app_secret" => node['cms']['auth']['facebook_app_secret']
+}) %>

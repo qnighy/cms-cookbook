@@ -1,0 +1,10 @@
+<% require "json" %>
+<% cnf = node['cms']['ranking_server'][node['cms']['ranking_server_id']] %>
+<%= JSON.pretty_generate({
+    "bind_address" => cnf["listen_address"] || "",
+    "http_port" => cnf["port"],
+    "log_color" => cnf["log_color"].nil? ? false : cnf["log_color"],
+
+    "username" => cnf['username'],
+    "password" => cnf['password']
+}) %>
