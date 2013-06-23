@@ -18,10 +18,6 @@ Platforms
 
 Currently, this cookbook supports only Ubuntu.
 
-e.g.
-#### packages
-- `toaster` - cms needs toaster to brown your bagel.
-
 Attributes
 ----------
 
@@ -62,9 +58,13 @@ Attributes
 * `node['cms']['auth']['facebook_app_id']` - Facebook App ID for logging in via Facebook
 * `node['cms']['auth']['facebook_app_secret']` - Facebook App Secret for logging in via Facebook
 
+#### cms::git
+
+* `node['cms']['git']['repo']` - git repository used in `cms::git`.
+* `node['cms']['git']['ref']` - git branch/tag name used in `cms::git`.
+
 Usage
 -----
-#### cms::default
 
 For example, assume there are three servers:
 * 192.168.30.11 - for Web server & DB server, and miscellaneous
